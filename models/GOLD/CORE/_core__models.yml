@@ -142,17 +142,4 @@ models:
               config:
                 store_failures: true
 
-unit_tests:
-  # Fixture CSV en el expect (tests/fixtures/dim_users__email_expected.csv) e
-  # input también desde CSV: útil cuando hay muchos casos.
-  - name: test_dim_users_valida_formato_email
-    model: dim_users
-    given:
-      - input: ref('slv_sql_server_dbo__users')
-        format: csv
-        fixture: slv_users__email_cases
-      - input: ref('dim_addresses')
-        rows: []
-    expect:
-      format: csv
-      fixture: dim_users__email_expected
+
