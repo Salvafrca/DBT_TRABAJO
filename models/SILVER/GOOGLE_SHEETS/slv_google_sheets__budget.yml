@@ -1,0 +1,16 @@
+models:
+  - name: slv_google_sheets__budget
+    columns:
+      - name: budget_id
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: false
+      - name: product_id
+        description: id del producto con el que se relaciona la fila
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('slv_sql_server_dbo__products')
+                field: product_id
