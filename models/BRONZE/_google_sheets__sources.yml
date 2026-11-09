@@ -10,3 +10,5 @@ sources:
           - name: _row
             data_tests:
               - not_null
+              - unique
+              
