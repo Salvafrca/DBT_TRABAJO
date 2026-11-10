@@ -1,6 +1,4 @@
-=============================================================================
-Gold · core: dimensiones y hechos compartidos por toda la organización
-=============================================================================
+
 models:
   - name: dim_users
     description: Dimensión de usuarios enriquecida con su dirección por defecto.

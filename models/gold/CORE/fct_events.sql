@@ -4,6 +4,14 @@
 -- Hechos de eventos de navegación. Grano: una fila por evento.
 -- =============================================================================
 
+{{ config(
+incremental_strategy='microbatch',
+event_time='event_at_utc',
+ event_time='event_at_utc', batch_size='month', 
+begin='2024-01-01', lookback=1
+) }}
+
+
 with events as (
     select * from {{ ref('slv_sql_server_dbo__events') }}
 ),
