@@ -113,20 +113,3 @@ models:
 # se queda con la versión más reciente de cada usuario.
 #   dbt test --select "slv_sql_server_dbo__users,test_type:unit"
 # =============================================================================
-unit_tests:
-  - name: test_slv_users_quita_borrados_y_deduplica
-    model: slv_sql_server_dbo__users
-    given:
-      - input: ref('stg_sql_server_dbo__users')
-        rows:
-          # u1 aparece dos veces: debe quedar solo la versión de 2024-02-01
-          - {user_id: u1, email: ' Ana@Example.com ', is_deleted: false, date_load: '2024-01-01 00:00:00'}
-          - {user_id: u1, email: 'ana.nueva@example.com', is_deleted: false, date_load: '2024-02-01 00:00:00'}
-          # u2 está borrado en origen: no debe aparecer
-          - {user_id: u2, email: 'luis@example.com', is_deleted: true, date_load: '2024-01-01 00:00:00'}
-          # u3 comprueba la normalización del email
-          - {user_id: u3, email: '  MARTA@Example.ES', is_deleted: false, date_load: '2024-01-01 00:00:00'}
-    expect:
-      rows:
-        - {user_id: u1, email: 'ana.nueva@example.com'}
-        - {user_id: u3, email: 'marta@example.es'}

@@ -15,8 +15,8 @@ version: '1.0.0'
 profile: default
 
 vars:
-low_stock_threshold: 10
-budget_start_date: '2024-01-01'
+  low_stock_threshold: 10
+  budget_start_date: '2024-01-01'
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]
@@ -48,6 +48,7 @@ models:
     # --- Staging: casting y renaming, 1:1 con Bronze. Vistas: no ocupan
     #     almacenamiento y siempre reflejan Bronze.
     staging:
+      +tags: ['staging']
       +materialized: view
       +database:  DEV_SILVER_DB 
       sql_server_dbo:
@@ -58,6 +59,7 @@ models:
     # --- Silver: limpieza y deduplicación. Tablas: la deduplicación es cara y
     #     no queremos repetirla en cada consulta.
     silver:
+    +tags: ['silver']
       +materialized: table
       +database: DEV_SILVER_DB
       sql_server_dbo:
@@ -68,6 +70,7 @@ models:
     # --- Gold: consumo. La capa la marca la database; el tipo de tabla, el
     #     prefijo del modelo (dim_, fct_, agg_, int_).
     gold:
+      +tags: ['gold']
       +materialized: table
       +database: DEV_GOLD_DB
       intermediate:
@@ -76,12 +79,17 @@ models:
       core:
         +schema: core
         +meta:
+          +tags: ['core']
           owner: equipo-datos-core
+
       marketing:
+      +tags: ['marketing']
         +schema: marketing
         +meta:
           owner: equipo-marketing-analytics
+
       product:
+        +tags: ['product']
         +schema: product
         +meta:
           owner: equipo-producto
@@ -111,3 +119,8 @@ snapshots:
     +database: DEV_SILVER_DB 
     +schema: snapshots
     +transient: false
+
+
+# dbt_project.yml
+on-run-end:
+  - "{{ log_run_summary(results) }}"
